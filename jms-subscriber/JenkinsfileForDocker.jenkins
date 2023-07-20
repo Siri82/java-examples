@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    tools {
+        maven "Maven"
+        jdk "JDK17"
+    }
+    environment {
+        PATH = "C:\\WINDOWS\\SYSTEM32;C:\\Program Files\\Docker\\Docker\\resources\\bin"
+        DOCKERHUB_CREDENTIALS=credentials('DOCKERHUB_CREDENTIALS')
+        } 
+        
+	stage("build and push jms-subscriber") {
+            steps {
+                dir('jms-subscriber') {
+                	bat "mvn clean package"
+                	bat "docker build -t $DOCKERHUB_CREDENTIALS_USR/jms-subscriber-service-app:${currentBuild.number} ."
+                	withDockerRegistry([credentialsId: 'DockerHub_Credentials', url: '']){
+                    		bat "docker push $DOCKERHUB_CREDENTIALS_USR/jms-subscriber-service-app:${currentBuild.number}"
+                	}
+		}
+            
+        
+    }}
+    post {
+        always {
+          bat "docker logout"
+        }
+    }
+	}
