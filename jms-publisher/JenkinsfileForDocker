@@ -7,7 +7,7 @@ pipeline {
     }
     environment {
     PATH = "C:\\WINDOWS\\SYSTEM32;C:\\Program Files\\Docker\\Docker\\resources\\bin"
-    DOCKERHUB_CREDENTIALS=credentials('DOCKERHUB_CREDENTIALS')
+    DOCKER123=credentials('DOCKER123')
     } 
     stages {
 	stage("build and push jms-publisher") {
@@ -15,7 +15,7 @@ pipeline {
                 dir('jms-publisher') {
                 	bat "mvn clean package"
                 	bat "docker build -t siri82/jms-publisher-service-app:${currentBuild.number} ."
-                	withDockerRegistry([credentialsId: 'DockerHub_Credentials', url: '']){
+                	withDockerRegistry([credentialsId: 'DOCKER123', url: '']){
                     		bat "docker push siri82/jms-publisher-service-app:${currentBuild.number}"
                 	}
 		}
